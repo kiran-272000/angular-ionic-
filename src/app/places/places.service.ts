@@ -64,7 +64,7 @@ export class PlacesService {
     availableTo: Date
   ) {
     const newPlace = new Place(
-      Math.random.toString(),
+      Math.random().toString(),
       title,
       description,
       "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Paris_Night.jpg/1024px-Paris_Night.jpg",

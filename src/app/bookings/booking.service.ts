@@ -25,7 +25,7 @@ export class BookingService {
     dateTo: string
   ) {
     const newBooking = new Booking(
-      Math.random.toString(),
+      Math.random().toString(),
       placeId,
       this.authService.userId,
       placeTitle,
@@ -37,14 +37,24 @@ export class BookingService {
       dateTo
     );
 
-    return this._bookings.pipe(
+    return this.bookings.pipe(
       take(1),
-      delay(1),
+      delay(1000),
       tap((bookings) => {
         this._bookings.next(bookings.concat(newBooking));
       })
     );
   }
 
-  cancelBooking() {}
+  cancelBooking(bookingId: string) {
+    return this.bookings.pipe(
+      take(1),
+      delay(1000),
+      tap((bookings) => {
+        this._bookings.next(
+          bookings.filter((booking) => booking.id !== bookingId)
+        );
+      })
+    );
+  }
 }
