@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
-import { MenuController } from "@ionic/angular";
+import { LoadingController, MenuController } from "@ionic/angular";
 import { SegmentChangeEventDetail } from "@ionic/core";
 
 import { PlacesService } from "../places.service";
@@ -16,12 +16,14 @@ export class DiscoverPage implements OnInit, OnDestroy {
   loadedPlaces: Place[];
   loadedPlacesListing: Place[];
   releventPlaces: Place[];
+  isLoading: boolean = false;
   private placesSub: Subscription;
 
   constructor(
     private placesService: PlacesService,
     private menuCtrl: MenuController,
-    private authService: AuthService
+    private authService: AuthService,
+    private loadingCtrl: LoadingController
   ) {}
 
   ngOnInit() {
@@ -32,6 +34,19 @@ export class DiscoverPage implements OnInit, OnDestroy {
       this.releventPlaces = this.loadedPlaces;
       this.loadedPlacesListing = this.releventPlaces.slice(1);
     });
+  }
+
+  ionViewWillEnter(){
+    this.isLoading=true;
+    this.loadingCtrl.create({
+      message: 'Loading Places...'
+    }).then(loadingEl =>{
+      loadingEl.present()
+      this.placesService.fetchPlaces().subscribe(()=>{
+        loadingEl.dismiss();
+        this.isLoading=false
+      });
+    })
   }
 
   ngOnDestroy(): void {

@@ -5,6 +5,7 @@ import {
   ModalController,
   ActionSheetController,
   LoadingController,
+  AlertController,
 } from "@ionic/angular";
 
 import { PlacesService } from "../../places.service";
@@ -20,6 +21,7 @@ import { BookingService } from "src/app/bookings/booking.service";
 })
 export class PlaceDetailPage implements OnInit, OnDestroy {
   place: Place;
+  isLoading: boolean= false;
   private placeSub: Subscription;
 
   constructor(
@@ -29,7 +31,9 @@ export class PlaceDetailPage implements OnInit, OnDestroy {
     private modalCtrl: ModalController,
     private actionSheetCtrl: ActionSheetController,
     private bookingService: BookingService,
-    private loadingCtrl: LoadingController
+    private loadingCtrl: LoadingController,
+
+    private alertCtrl: AlertController
   ) {}
 
   ngOnInit() {
@@ -38,11 +42,30 @@ export class PlaceDetailPage implements OnInit, OnDestroy {
         this.navCtrl.navigateBack("/places/tabs/discover");
         return;
       }
-      this.placeSub = this.placesService
-        .getPlace(paramMap.get("placeId"))
-        .subscribe((place) => {
-          this.place = place;
-        });
+      this.isLoading=true
+      this.loadingCtrl.create({
+        message: "Loading..."
+      }).then(loadingEl=>{
+        loadingEl.present();
+        this.placeSub = this.placesService
+          .getPlace(paramMap.get("placeId"))
+          .subscribe((place) => {       
+            this.place = place;
+            this.isLoading=false
+            
+          },error=>{
+            this.alertCtrl.create({
+              header: 'Error Fetching Place',
+              message: 'Place could not be fetched try again later.',
+              buttons:[{text: 'Ok', handler:()=>{
+        this.navCtrl.navigateBack("/places/tabs/discover")}}]
+          }).then(alertEl=>{
+            alertEl.present();
+
+          })
+          });
+          loadingEl.dismiss()
+      })
     });
   }
 

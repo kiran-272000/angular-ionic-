@@ -10,7 +10,7 @@ import { PlacesRoutingModule } from './places-routing.module';
   imports: [
     CommonModule,
     IonicModule,
-    PlacesRoutingModule
+    PlacesRoutingModule,
   ],
   declarations: [PlacesPage]
 })

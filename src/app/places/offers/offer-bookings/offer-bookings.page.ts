@@ -13,7 +13,9 @@ import { PlacesService } from '../../places.service';
 })
 export class OfferBookingsPage implements OnInit, OnDestroy {
   place: Place;
+  placeId : string;
   private placeSub : Subscription
+
 
   constructor(
     private route: ActivatedRoute,
@@ -27,6 +29,7 @@ export class OfferBookingsPage implements OnInit, OnDestroy {
         this.navCtrl.navigateBack('/places/tabs/offers');
         return;
       }
+      this.placeId= paramMap.get('placeId');
       this.placesService.getPlace(paramMap.get('placeId')).subscribe(place=>{this.place=place});
     });
   }
